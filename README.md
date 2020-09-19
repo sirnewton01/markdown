@@ -310,6 +310,19 @@ implements the following extensions:
 
 - **Mmark support**, see <https://mmark.miek.nl/post/syntax/> for all new syntax elements this adds.
 
+- **Reference style link suffixes**, apply suffix after a colon in a reference style link to the full url when parsing. When referring to multiple anchors within a source document or multiple pages within a website this can help to avoid repetition. This is especially useful when applying semantic linking.
+
+  ```
+  Both [hamlet:act1-scene1] and [hamlet:act2-scene2] make use of certain plain devices ...
+  
+  ...
+  
+  ***
+  [hamlet]: http://shakespeare-archive.org/hamlet.html#
+  ```
+  
+  The reference-style links will evaluate to ```http://shakespeare-archive.org/hamlet.html#act1-scene1``` and ```http://shakespeare-archive.org/hamlet.html#act2-scene2``` respectively. Note that if the link at the bottom has a trailing slash then the suffixes can be to different pages on the same server.
+
 ## Todo
 
 - port https://github.com/russross/blackfriday/issues/348
