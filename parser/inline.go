@@ -460,6 +460,12 @@ func link(p *Parser, data []byte, offset int) (int, ast.Node) {
 			id = data[linkB:linkE]
 		}
 
+		sep := skipUntilChar(id, 0, ':')
+		suffix := []byte{}
+		if sep < len(id) {
+			id, suffix = id[:sep], id[sep+1:]
+		}
+
 		// find the reference with matching id
 		lr, ok := p.getRef(string(id))
 		if !ok {
@@ -469,6 +475,12 @@ func link(p *Parser, data []byte, offset int) (int, ast.Node) {
 		// keep link and title from reference
 		linkID = id
 		link = lr.link
+		// Append the suffix to the referenced link
+		if len(suffix) > 0 {
+			link = make([]byte, len(lr.link))
+			copy(link, lr.link)
+			link = append(link, suffix...)
+		}
 		title = lr.title
 		if altContentConsidered {
 			altContent = lr.text
@@ -533,6 +545,11 @@ func link(p *Parser, data []byte, offset int) (int, ast.Node) {
 			title = ref.title
 		} else {
 			// find the reference with matching id
+			sep := skipUntilChar(id, 0, ':')
+			suffix := []byte{}
+			if sep < len(id) {
+				id, suffix = id[:sep], id[sep+1:]
+			}
 			lr, ok := p.getRef(string(id))
 			if !ok {
 				return 0, nil
@@ -546,7 +563,11 @@ func link(p *Parser, data []byte, offset int) (int, ast.Node) {
 			}
 
 			// keep link and title from reference
-			link = lr.link
+			link = make([]byte, len(lr.link))
+			// Append suffix, if any to the referenced link
+			copy(link, lr.link)
+			link = append(link, suffix...)
+
 			// if inline footnote, title == footnote contents
 			title = lr.title
 			noteID = lr.noteID
