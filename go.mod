@@ -1,4 +1,4 @@
-module github.com/sirnewton01/markdown
+module github.com/gomarkdown/markdown
 
 go 1.12
 
